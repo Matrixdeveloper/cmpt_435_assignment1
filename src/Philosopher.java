@@ -10,6 +10,7 @@ public class Philosopher implements Runnable {
     DiningRoom RM;
     int id;
     int rounds;
+    int timeBound;
 
     /**
      * constructor of Philosopher
@@ -17,16 +18,17 @@ public class Philosopher implements Runnable {
      * @param RM Class DiningRoom, the DiningRoom where Philosopher will seat
      * @param rounds int, limit of Philosopher eating tries
      */
-    Philosopher(int id, DiningRoom RM, int rounds){
+    Philosopher(int id, DiningRoom RM, int rounds ,int timeBound){
         this.id = id;
         this.RM = RM;
         this.rounds = rounds;
+        this.timeBound = timeBound;
     }
 
     @Override
     public void run() {
         Random rd = new Random();
-        int time = rd.nextInt(5)*1000;
+        int time = rd.nextInt(timeBound)*1000;
         while (rounds>0) {
             // thinking some random time
             try {
@@ -41,7 +43,7 @@ public class Philosopher implements Runnable {
             this.RM.getforks(this.id);
 
             // start eating
-            time = rd.nextInt(5)*1000;
+            time = rd.nextInt(timeBound)*1000;
             try {
                 System.out.println("Philosopher[" + id + "] >>> >>> >>>" +
                         "Eating [" + time/1000 + " seconds]");
