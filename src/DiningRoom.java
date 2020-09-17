@@ -1,3 +1,9 @@
+//CMPT435 2020 Fall term
+//Name: Yue Weng
+//Student ID: 1121 9127
+//NSID: yuw857
+
+
 import java.util.Arrays;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
