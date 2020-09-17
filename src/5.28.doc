@@ -1,0 +1,124 @@
+CMPT 435 2020 Fall Term
+
+Assignment 1 External Documentation
+
+Name: Yue Weng
+Student number: 1121 9127
+NSID: yuw857
+
+Content:
+       Section 0: Compiling and running program
+       Section 1: modify argument of execution
+       Section 2: sample test and test result
+       Section 3: analysis
+       
+
+
+
+
+
+
+* Section 0: Compiling and running program
+o # environment: 
+* -JDK 1.8
+
+o # compile:
+* OS: Unix like <Linux, MacOS>
+* open terminal/bash
+* move current working directory to assignment directory
+* type command: make
+o # execution:
+* execute with default argument round=5, time bound=5 seconds
+* type command: java Main
+
+
+* Section 1: modify argument of execution
+o Example: round = 10, time bound=7 seconds
+* type command: java Main 10 7
+
+
+
+
+
+
+* Section 2: sample test and test result
+o java Main 1 1
+o test 5 philosopher eating 5 rounds, time limit of eating/thinking is 0 seconds
+o Expect: 1 single trace from philosopher 1 to 5
+o Running result:
+
+
+
+
+
+
+
+src $java Main 1 1
+Philosopher[4] >>> Thinking [0 seconds]
+Philosopher[1] >>> Thinking [0 seconds]
+Philosopher[2] >>> Thinking [0 seconds]
+Philosopher[3] >>> Thinking [0 seconds]
+Philosopher[5] >>> Thinking [0 seconds]
+Philosopher[5] >>> >>> >>>Eating [0 seconds]
+Philosopher[4] >>> >>> >>>Eating [0 seconds]
+Philosopher[3] >>> >>> >>>Eating [0 seconds]
+Philosopher[2] >>> >>> >>>Eating [0 seconds]
+Philosopher[1] >>> >>> >>>Eating [0 seconds]
+>>>>> Philosopher[4] FULL <<<<<
+>>>>> Philosopher[5] FULL <<<<<
+>>>>> Philosopher[3] FULL <<<<<
+>>>>> Philosopher[2] FULL <<<<<
+>>>>> Philosopher[1] FULL <<<<<
+
+
+o Test2: 2 round, time limit 5 seconds 
+
+src $java Main 2 5
+Philosopher[4] >>> Thinking [4 seconds]
+Philosopher[1] >>> Thinking [0 seconds]
+Philosopher[2] >>> Thinking [4 seconds]
+Philosopher[3] >>> Thinking [0 seconds]
+Philosopher[5] >>> Thinking [3 seconds]
+Philosopher[1] >>> >>> >>>Eating [4 seconds]
+Philosopher[5] >>> >>> >>>Eating [2 seconds]
+Philosopher[1] >>> Thinking [4 seconds]
+Philosopher[4] >>> >>> >>>Eating [3 seconds]
+Philosopher[5] >>> Thinking [2 seconds]
+Philosopher[3] >>> >>> >>>Eating [4 seconds]
+Philosopher[4] >>> Thinking [3 seconds]
+Philosopher[2] >>> >>> >>>Eating [1 seconds]
+Philosopher[2] >>> Thinking [1 seconds]
+Philosopher[3] >>> Thinking [4 seconds]
+Philosopher[1] >>> >>> >>>Eating [2 seconds]
+Philosopher[5] >>> >>> >>>Eating [1 seconds]
+>>>>> Philosopher[5] FULL <<<<<
+>>>>> Philosopher[1] FULL <<<<<
+Philosopher[4] >>> >>> >>>Eating [3 seconds]
+Philosopher[3] >>> >>> >>>Eating [3 seconds]
+>>>>> Philosopher[4] FULL <<<<<
+Philosopher[2] >>> >>> >>>Eating [4 seconds]
+>>>>> Philosopher[3] FULL <<<<<
+>>>>> Philosopher[2] FULL <<<<<
+
+* Each philosopher eat 2 rounds
+
+
+
+
+
+
+
+
+* Section 3: analysis
+o Mutual exclusion
+* As a monitor solution, the mutual exclusion is the core part. This is implemented via the java re-entrantLock.
+* Every philosopher must first hold the lock and then check their forks.
+* When philosopher await() on the Condition(java condition variable), they will automatically release the lock and wake one philosopher of Lock queue.
+
+o Condition Variable
+* The philosopher will wait on the target fork Condition if the fork is not available
+
+
+o Deadlock solution
+* To avoid circular wait, I choose the largest id philosopher which reverse the sequence of grab forks.
+* This philosopher will first grab right and then left forks.
