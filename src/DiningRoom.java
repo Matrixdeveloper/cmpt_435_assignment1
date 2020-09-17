@@ -21,8 +21,7 @@ public class DiningRoom
         while (turn == 0){
             try{
                 wait();
-            }catch (InterruptedException ignored){
-            }
+            }catch (InterruptedException ignored){}
         }
         turn = 0;
         // grab forks
@@ -38,7 +37,6 @@ public class DiningRoom
             rf=lf-rf;
             lf=lf-rf;
         }
-        System.out.println("leave enter");
         return new int[]{lf,rf};
     }
 
@@ -60,6 +58,8 @@ public class DiningRoom
             turn = 0;
             return;
         }
+        System.out.println("pass");
+        turn=1;
         notify();
     }
 

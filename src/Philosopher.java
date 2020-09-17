@@ -1,4 +1,3 @@
-import java.util.Objects;
 import java.util.Random;
 
 public class Philosopher implements Runnable {
@@ -16,28 +15,24 @@ public class Philosopher implements Runnable {
     public void run() {
 
         Random rd = new Random();
-        int time = rd.nextInt(2);
-        System.out.println("sleep " + time);
+        int time = rd.nextInt(2)*1000;
         while (limit>0) {
             try {
-                Thread.sleep(time);
-            } catch (InterruptedException e) {
                 System.out.println("Philosopher[" + id + "] >>> " +
                         "Thinking [" + time + " seconds]");
-            }
-            System.out.println("need fork ");
+                Thread.sleep(time);
+            } catch (InterruptedException ignored) {}
 
             // grab forks before eating
             this.RM.getforks(this.id);
 
             // start eating
-            time = rd.nextInt(4) * 1000;
+            time = rd.nextInt(2)*1000;
             try {
-                Thread.sleep(time);
-            } catch (InterruptedException e) {
-                System.out.println("Philosopher[" + id + "] >>> >>>" +
+                System.out.println("Philosopher[" + id + "] >>> >>> >>>" +
                         "Eating [" + time + " seconds]");
-            }
+                Thread.sleep(time);
+            } catch (InterruptedException ignored) {}
             // end eating and release forks
             this.RM.relforks(this.id);
             limit--;
