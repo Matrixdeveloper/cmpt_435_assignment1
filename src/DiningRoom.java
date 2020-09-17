@@ -1,34 +1,33 @@
 import java.util.Arrays;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class DiningRoom
 {
-    Semaphore[] forks;
+    Lock gate;
+    Condition[] forks;
+    int[] forkStatus; // invariant
     int numPhilos;
-    int turn;
 
     DiningRoom()
     {
-        numPhilos = 5;
-        forks = new Semaphore[numPhilos];
-        Arrays.setAll(forks, i->new Semaphore(1));
-        turn = 1;
+        this.gate = new ReentrantLock();
+        this.numPhilos = 5;
+        this.forks = new Condition[this.numPhilos];
+        this.forkStatus = new int[this.numPhilos];
+        Arrays.setAll(forks, i->gate.newCondition());
+        Arrays.fill(forkStatus, 1);
     }
 
-    private synchronized int[] enter(int id)
+    private int[] enter(int id)
     {
-        while (turn == 0){
-            try{
-                wait();
-            }catch (InterruptedException ignored){}
-        }
-        turn = 0;
-        // grab forks
+        // calculate target forks
         int lf, rf;
         lf = id - 2;
         rf = id % numPhilos;
-        if(lf<0) lf = 0;
+        if(lf<0) lf = numPhilos-1;
         // from id=1 to n-1, philosopher pick left then right
         if(id==numPhilos){
             // let largest ID philosopher pick right then left
@@ -41,33 +40,34 @@ public class DiningRoom
     }
 
 
-    public synchronized void getforks(int id)
-    {
-        int[] twoforks=enter(id);
-        try{
-            forks[twoforks[0]].acquire();
-            forks[twoforks[1]].acquire();
-        }catch (InterruptedException e){
-            turn = 1;
-            notify();
-            try{
-                wait();
-            } catch (InterruptedException ei){
-                return;
+    public void getforks(int id) {
+        gate.lock();
+        int[] twoforks = enter(id);
+        try {
+            while (forkStatus[twoforks[0]] == 0){
+                forks[twoforks[0]].await();
             }
-            turn = 0;
-            return;
+            forkStatus[twoforks[0]]=0;
+            while (forkStatus[twoforks[1]] == 0){
+                forks[twoforks[1]].await();
+            }
+            forkStatus[twoforks[1]]=0;
+        }catch (InterruptedException ignored){}
+        finally {
+            gate.unlock();
         }
-        System.out.println("pass");
-        turn=1;
-        notify();
+
     }
 
-    public synchronized void relforks(int id)
+    public void relforks ( int id)
     {
-        int[] twoforks=enter(id);
-        forks[twoforks[0]].release();
-        forks[twoforks[1]].release();
-        notify();
+        gate.lock();
+        int[] twoforks = enter(id);
+        forkStatus[twoforks[0]] = 1;
+        forkStatus[twoforks[1]] = 1;
+        forks[twoforks[0]].signal();
+        forks[twoforks[1]].signal();
+        gate.unlock();
     }
 }
+

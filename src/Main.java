@@ -3,7 +3,7 @@ public class Main {
 
         DiningRoom bigRoom = new DiningRoom();
         for(int i=1;i<6;i++){
-            new Thread(new Philosopher(i,bigRoom)).start();
+            new Thread(new Philosopher(i,bigRoom, 10)).start();
         }
     }
 }
