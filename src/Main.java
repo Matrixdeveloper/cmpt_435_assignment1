@@ -3,12 +3,15 @@
 //Student ID: 1121 9127
 //NSID: yuw857
 
+/**
+ * Main program
+ */
 
 public class Main {
     public static void main(String[] args) {
-
         DiningRoom bigRoom = new DiningRoom();
         for(int i=1;i<6;i++){
+            // create 5 thread for 5 philosopher
             new Thread(new Philosopher(i,bigRoom, 10)).start();
         }
     }

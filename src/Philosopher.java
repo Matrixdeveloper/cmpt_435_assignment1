@@ -11,6 +11,12 @@ public class Philosopher implements Runnable {
     int id;
     int rounds;
 
+    /**
+     * constructor of Philosopher
+     * @param id int, identification of Philosopher
+     * @param RM Class DiningRoom, the DiningRoom where Philosopher will seat
+     * @param rounds int, limit of Philosopher eating tries
+     */
     Philosopher(int id, DiningRoom RM, int rounds){
         this.id = id;
         this.RM = RM;
@@ -22,11 +28,14 @@ public class Philosopher implements Runnable {
         Random rd = new Random();
         int time = rd.nextInt(5)*1000;
         while (rounds>0) {
+            // thinking some random time
             try {
                 System.out.println("Philosopher[" + id + "] >>> " +
                         "Thinking [" + time/1000 + " seconds]");
                 Thread.sleep(time);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException esl) {
+                System.out.println("%%% Philosopher["+id+"] thinking interrupted %%%");
+            }
 
             // grab forks before eating
             this.RM.getforks(this.id);
@@ -37,11 +46,15 @@ public class Philosopher implements Runnable {
                 System.out.println("Philosopher[" + id + "] >>> >>> >>>" +
                         "Eating [" + time/1000 + " seconds]");
                 Thread.sleep(time);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException esl) {
+                System.out.println("%%% Philosopher["+id+"] eating interrupted %%%");
+            }
+
             // end eating and release forks
             this.RM.relforks(this.id);
             rounds--;
         }
+        // finish all round, say something and leave
         System.out.println(">>>>> Philosopher["+id+"] FULL <<<<<");
     }
 }
