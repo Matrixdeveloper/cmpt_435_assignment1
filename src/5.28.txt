@@ -19,22 +19,22 @@ Content:
 
 
 * Section 0: Compiling and running program
-o # environment: 
-* -JDK 1.8
+	o # environment: 
+	* -JDK 1.8
 
 o # compile:
-* OS: Unix like <Linux, MacOS>
-* open terminal/bash
-* move current working directory to assignment directory
-* type command: make
+	* OS: Unix like <Linux, MacOS>
+	* open terminal/bash
+	* move current working directory to assignment directory
+	* type command: make
 o # execution:
-* execute with default argument round=5, time bound=5 seconds
-* type command: java Main
+	* execute with default argument round=5, time bound=5 seconds
+	* type command: java Main
 
 
 * Section 1: modify argument of execution
-o Example: round = 10, time bound=7 seconds
-* type command: java Main 10 7
+	o Example: round = 10, time bound=7 seconds
+		* type command: java Main 10 7
 
 
 
@@ -42,10 +42,10 @@ o Example: round = 10, time bound=7 seconds
 
 
 * Section 2: sample test and test result
-o java Main 1 1
-o test 5 philosopher eating 5 rounds, time limit of eating/thinking is 0 seconds
-o Expect: 1 single trace from philosopher 1 to 5
-o Running result:
+	o java Main 1 1
+	o test 5 philosopher eating 5 rounds, time limit of eating/thinking is 0 seconds
+	o Expect: 1 single trace from philosopher 1 to 5
+	o Running result:
 
 
 
@@ -110,15 +110,30 @@ Philosopher[2] >>> >>> >>>Eating [4 seconds]
 
 
 * Section 3: analysis
-o Mutual exclusion
-* As a monitor solution, the mutual exclusion is the core part. This is implemented via the java re-entrantLock.
-* Every philosopher must first hold the lock and then check their forks.
-* When philosopher await() on the Condition(java condition variable), they will automatically release the lock and wake one philosopher of Lock queue.
+	o Mutual exclusion
+	* As a monitor solution, the mutual exclusion is the core part.
+	* This is implemented via the "synchronized", java monitor
+	* Every philosopher implicitly being pushed to the entry queue.
+    * Once they are being notified, they will check if the forks are ready, and keep going their work.
 
-o Condition Variable
-* The philosopher will wait on the target fork Condition if the fork is not available
+o Condition Variable:
+    * My first version used the CV, but I decide to drop it.
+    * For each fork their are only two philosopher competing.
+    * If one grab it, the other must wait for it.
+    * There isn't a need for a queue.
 
 
-o Deadlock solution
-* To avoid circular wait, I choose the largest id philosopher which reverse the sequence of grab forks.
-* This philosopher will first grab right and then left forks.
+* Deadlock solution
+	* To avoid circular wait, I choose the largest id philosopher which reverse the sequence of grab forks.
+	* This philosopher will first grab right and then left forks.
+
+* Advantage and Disadvantage
+	* Actually, I was thinking of expand the number of philosopher.
+	* I write the function dynamically generate the fork index.
+	* One advantage of my solution could be portability. Easier being modified to another solution.
+	* When I talk with my friend, I find that even the fork invariant could be replaced by some logic.
+	* Imagine 3 contiguous philosopher seat together, the central philosopher could eat only when the
+	* left philosopher and the right philosopher stop eat.
+	* That means if the two threads stop running/waiting, the current philosopher thread can running.
+	* Hence, the fork invariant could be converted to philosopher status.
+

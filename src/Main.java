@@ -40,7 +40,7 @@ public class Main {
             return;
         }
 
-        DiningRoom bigRoom = new DiningRoom();
+        DiningRoomM bigRoom = new DiningRoomM();
         for(int i=1;i<6;i++){
             // create 5 thread for 5 philosopher
             new Thread(new Philosopher(i,bigRoom, setRounds, setTimeBounds)).start();

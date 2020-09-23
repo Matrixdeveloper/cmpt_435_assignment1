@@ -7,7 +7,7 @@
 import java.util.Random;
 
 public class Philosopher implements Runnable {
-    DiningRoom RM;
+    DiningRoomM RM;
     int id;
     int rounds;
     int timeBound;
@@ -18,7 +18,7 @@ public class Philosopher implements Runnable {
      * @param RM Class DiningRoom, the DiningRoom where Philosopher will seat
      * @param rounds int, limit of Philosopher eating tries
      */
-    Philosopher(int id, DiningRoom RM, int rounds ,int timeBound){
+    Philosopher(int id, DiningRoomM RM, int rounds ,int timeBound){
         this.id = id;
         this.RM = RM;
         this.rounds = rounds;
